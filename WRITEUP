@@ -1,0 +1,64 @@
+Introduction
+This project involves building a text classification model focused on review data. The goal was to preprocess and transform text, extract meaningful features, and classify review scores using machine learning. 
+The approach relied on feature extraction, stop-word removal, TF-IDF vectorization, and dimensionality reduction, followed by training a logistic regression model.
+
+Methodology
+1. Data Preprocessing
+Stop-word Removal: I used the NLTK stopwords list to eliminate common words that don’t add much value to the sentiment or meaning of the text. 
+By defining a set of stop words and filtering them out from the tokenized text, I managed to reduce noise, thereby 
+improving the efficiency of TF-IDF vectorization later in the pipeline.
+
+Text Cleaning: Both Text and Summary fields underwent a cleaning process where:
+
+Lowercasing ensured consistency.
+Punctuation removal avoided interference with term frequency statistics.
+Finally, applying the stop-word filter function removed unnecessary words from both fields.
+2. Feature Engineering
+In addition to text processing, I derived the following features from the dataset:
+
+Helpfulness: Defined as the ratio of HelpfulnessNumerator to HelpfulnessDenominator, this feature captures user feedback on how others perceived the 
+review's value. This feature added interpretability to the review's influence.
+
+Review Text Length: Both character and word count provided insight into the verbosity of reviews, potentially correlating with score quality or informativeness.
+
+Short Summary and Short Text: These fields were derived by applying preprocessing functions on the raw Summary and Text fields, which improved the 
+quality of the final features used in model training.
+
+3. Text Vectorization using TF-IDF
+Using TfidfVectorizer, I transformed the cleaned Short Text into a numerical matrix where each word's value represents its importance in the corpus. 
+Setting max_features=5000 allowed for limiting the feature set to a manageable size, reducing sparsity and enhancing model efficiency.
+
+4. Dimensionality Reduction using Truncated SVD
+TF-IDF transformations often result in high-dimensional data, leading to computational inefficiencies and potential overfitting. 
+To address this, I implemented Truncated SVD with n_components=300, which helped reduce the dimensionality while retaining as much variance as possible. 
+I experimented with various values for n_components and observed that 300 yielded optimal performance by maintaining balance between expressiveness and computational efficiency.
+
+5. Model Selection and Training
+Logistic Regression: I chose logistic regression due to its interpretability and efficient convergence, especially for high-dimensional data after SVD. 
+Using max_iter=1000 allowed the model to fully converge. This classifier achieved a robust balance between accuracy and interpretability.
+
+Alternative Models: I tested RandomForest and XGBCClassifier, but logistic regression outperformed both in terms of prediction accuracy and computational efficiency. 
+RandomForest showed promise with additional interpretability features but required substantially higher computational resources, while XGBClassifier tended to overfit despite hyperparameter tuning.
+
+Final Model Architecture
+Here’s an overview of the finalized workflow:
+
+Data Cleaning and Preprocessing:
+
+Removing stop words, punctuation, and converting text to lowercase.
+Creating additional features for Helpfulness and review length.
+Feature Extraction and Selection:
+
+Using TfidfVectorizer on Short Text to generate 5000 features.
+Applying Truncated SVD for dimensionality reduction to 300 components.
+Model Training and Prediction:
+
+Training a logistic regression classifier on the SVD-transformed feature matrix.
+Prediction based on optimized logistic regression, which demonstrated the highest accuracy and reliability.
+Conclusion and Observations
+This process involved balancing model complexity and interpretability. Key insights include:
+
+Feature Efficiency: Selecting and engineering only a few additional features while focusing on TF-IDF-SVD transformation allowed for manageable, meaningful input into the classifier.
+Dimensionality Reduction: Reducing dimensions using SVD greatly improved logistic regression performance, reducing overfitting risks while maintaining interpretive power.
+Model Comparison: Logistic regression proved superior due to its simplicity and robust performance, particularly with dimensionality-reduced data.
+In summary, this pipeline efficiently integrates feature extraction, TF-IDF, dimensionality reduction, and logistic regression, achieving a streamlined approach to text classification.
